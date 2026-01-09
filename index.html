@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        // --- COLA O SEU CÓDIGO ABAIXO DESTA LINHA ---
+        
+        const { useState, useEffect, useMemo } = React;
+
+        function Home() {
+            // AQUI VOCÊ COLA O CONTEÚDO DO SEU CÓDIGO (da linha 23 em diante)
+            return (
+                <div className="p-10">
+                    <h1 className="text-2xl font-bold">App de Estudos</h1>
+                    <p>O código completo precisa das pastas de componentes para funcionar 100%.</p>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Home />);
+    </script>
+</body>
+</html>
