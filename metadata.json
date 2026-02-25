@@ -1,0 +1,77 @@
+
+import React, { useState, useEffect } from 'react';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './views/Home';
+import Contact from './views/Contact';
+import Login from './views/Login';
+import Legal from './views/Legal';
+import PrivacyConsentModal from './components/PrivacyConsentModal';
+import { User } from './types';
+
+const App: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('study_user');
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      if (!parsedUser.data_de_consentimento) {
+        setShowPrivacyModal(true);
+      }
+    }
+    setIsLoading(false);
+  }, []);
+
+  const handleAcceptPrivacy = () => {
+    if (user) {
+      const updatedUser = { 
+        ...user, 
+        data_de_consentimento: new Date().toISOString() 
+      };
+      setUser(updatedUser);
+      localStorage.setItem('study_user', JSON.stringify(updatedUser));
+      setShowPrivacyModal(false);
+    }
+  };
+
+  const handleLogin = (userData: User) => {
+    setUser(userData);
+    localStorage.setItem('study_user', JSON.stringify(userData));
+    if (!userData.data_de_consentimento) {
+      setShowPrivacyModal(true);
+    }
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('study_user');
+  };
+
+  if (isLoading) return null;
+
+  return (
+    <Router>
+      <div className="min-h-screen">
+        {showPrivacyModal && <PrivacyConsentModal onAccept={handleAcceptPrivacy} />}
+        <Routes>
+          <Route 
+            path="/" 
+            element={user ? <Home user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+          />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/legal" element={<Legal />} />
+          <Route 
+            path="/login" 
+            element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} 
+          />
+          <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+};
+
+export default App;
